@@ -100,3 +100,43 @@
 
 </body>
   </html>
+<!DOCTYPE html>
+<html>
+<head>
+<title>DevHub V2</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>DevHub V2</h1>
+
+<div id="auth">
+    <h2>Login / Register</h2>
+
+    <input id="email" placeholder="Email">
+    <input id="password" placeholder="Password">
+
+    <button onclick="register()">Register</button>
+    <button onclick="login()">Login</button>
+</div>
+
+<hr>
+
+<div id="app" style="display:none">
+
+    <h2>Create Tutorial</h2>
+
+    <input id="title" placeholder="Tutorial Title">
+    <textarea id="content" placeholder="Write tutorial..."></textarea>
+
+    <button onclick="postTutorial()">Post</button>
+
+    <h2>Tutorials</h2>
+    <div id="tutorials"></div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+    </html>
