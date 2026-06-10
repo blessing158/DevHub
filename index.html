@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevHub V1</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <div class="logo">
+        <!-- SIMPLE SVG LOGO -->
+        <svg width="40" height="40" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" stroke="gold" stroke-width="6" fill="none"/>
+            <text x="50" y="60" text-anchor="middle" font-size="40" fill="gold" font-family="Arial">DH</text>
+        </svg>
+        <span>DevHub</span>
+    </div>
+
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#tutorials">Tutorials</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#community">Community</a></li>
+    </ul>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="hero">
+    <h1>Learn. Build. Collaborate.</h1>
+    <p>The meeting place for software developers and learners.</p>
+
+    <button onclick="scrollToSection('tutorials')">
+        Start Exploring
+    </button>
+</section>
+
+<!-- TUTORIALS -->
+<section id="tutorials">
+    <h2>Tutorials</h2>
+
+    <div class="card">
+        <h3>What is a Software Developer?</h3>
+        <p>Learn the basics of software development.</p>
+        <a href="https://www.youtube.com/results?search_query=what+is+a+software+developer" target="_blank">Watch</a>
+    </div>
+
+    <div class="card">
+        <h3>HTML Beginner Guide</h3>
+        <a href="https://www.youtube.com/results?search_query=html+tutorial+for+beginners" target="_blank">Watch</a>
+    </div>
+
+    <div class="card">
+        <h3>JavaScript Basics</h3>
+        <a href="https://www.youtube.com/results?search_query=javascript+for+beginners" target="_blank">Watch</a>
+    </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+    <h2>Projects Board</h2>
+
+    <div class="card">
+        <h3>Student Study App</h3>
+        <p>Looking for frontend developer</p>
+        <span>HTML • CSS • JS</span>
+    </div>
+
+    <div class="card">
+        <h3>Weather App</h3>
+        <p>Beginner friendly project idea</p>
+        <span>Open for collaboration</span>
+    </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community">
+    <h2>Community</h2>
+
+    <div class="card">
+        <p><b>New:</b> How do I start coding with only a phone?</p>
+    </div>
+
+    <div class="card">
+        <p><b>Question:</b> Best first programming language?</p>
+    </div>
+
+    <div class="card">
+        <p><b>Discussion:</b> Let’s build a student app together!</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 DevHub V1 - Built for developers</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+  </html>
