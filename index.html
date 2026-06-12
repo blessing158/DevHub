@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevHub - Create Anime & Cartoon Movies</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#0f0f0f;
+    color:white;
+}
+
+header{
+    background:#111;
+    padding:20px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+}
+
+.logo{
+    font-size:32px;
+    font-weight:bold;
+    color:gold;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+.btn{
+    background:gold;
+    color:black;
+    padding:10px 20px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.hero{
+    min-height:90vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    text-align:center;
+    padding:40px;
+}
+
+.hero h1{
+    font-size:4rem;
+    margin-bottom:20px;
+}
+
+.hero span{
+    color:gold;
+}
+
+.hero p{
+    max-width:700px;
+    font-size:1.2rem;
+    color:#ccc;
+    margin-bottom:30px;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.secondary-btn{
+    background:transparent;
+    border:2px solid gold;
+    color:gold;
+    padding:10px 20px;
+    border-radius:8px;
+    text-decoration:none;
+}
+
+section{
+    padding:80px 8%;
+}
+
+.section-title{
+    text-align:center;
+    font-size:2.5rem;
+    color:gold;
+    margin-bottom:50px;
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:#1a1a1a;
+    padding:25px;
+    border-radius:15px;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h3{
+    color:gold;
+    margin-bottom:15px;
+}
+
+.pricing{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:30px;
+}
+
+.plan{
+    background:#1a1a1a;
+    border-radius:15px;
+    padding:30px;
+}
+
+.plan h2{
+    color:gold;
+    margin-bottom:15px;
+}
+
+.plan ul{
+    list-style:none;
+}
+
+.plan ul li{
+    margin:10px 0;
+}
+
+.price{
+    font-size:2rem;
+    margin:20px 0;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    background:#111;
+    color:#999;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">DevHub</div>
+
+    <nav>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Login</a>
+        <a href="#" class="btn">Sign Up</a>
+    </nav>
+</header>
+
+<section class="hero">
+
+    <h1>Create <span>Anime & Cartoon Movies</span> In Your Browser</h1>
+
+    <p>
+        Build characters, create scenes, design worlds,
+        add voices, music and animations.
+        DevHub helps creators bring their movie ideas to life.
+    </p>
+
+    <div class="hero-buttons">
+        <a href="#" class="btn">Start Creating</a>
+        <a href="#pricing" class="secondary-btn">View Plans</a>
+    </div>
+
+</section>
+
+<section id="features">
+
+<h2 class="section-title">Features</h2>
+
+<div class="features">
+
+<div class="card">
+<h3>Character Creator</h3>
+<p>Create anime and cartoon characters with custom hairstyles, outfits and accessories.</p>
+</div>
+
+<div class="card">
+<h3>Scene Builder</h3>
+<p>Build villages, cities, schools, forests and fantasy worlds.</p>
+</div>
+
+<div class="card">
+<h3>Movie Editor</h3>
+<p>Add scenes to a timeline and build complete stories.</p>
+</div>
+
+<div class="card">
+<h3>Voice & Music</h3>
+<p>Add dialogue, voice acting and background music.</p>
+</div>
+
+<div class="card">
+<h3>Export Movies</h3>
+<p>Export your creations and share them online.</p>
+</div>
+
+<div class="card">
+<h3>Cloud Storage</h3>
+<p>Save and manage your movie projects securely.</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="pricing">
+
+<h2 class="section-title">Pricing Plans</h2>
+
+<div class="pricing">
+
+<div class="plan">
+<h2>Free Plan</h2>
+
+<div class="price">R0</div>
+
+<ul>
+<li>✓ 3 Characters</li>
+<li>✓ 5 Scenes</li>
+<li>✓ Basic Assets</li>
+<li>✓ 720p Export</li>
+<li>✓ Watermark</li>
+<li>✓ 5 Minute Movies</li>
+</ul>
+
+<br>
+
+<a href="#" class="btn">Get Started</a>
+
+</div>
+
+<div class="plan">
+<h2>Premium Plan</h2>
+
+<div class="price">R99/month</div>
+
+<ul>
+<li>✓ Unlimited Characters</li>
+<li>✓ Unlimited Scenes</li>
+<li>✓ AI Character Generator</li>
+<li>✓ AI Scene Generator</li>
+<li>✓ Full Movie Builder</li>
+<li>✓ No Watermark</li>
+<li>✓ 1080p Export</li>
+<li>✓ Priority Rendering</li>
+</ul>
+
+<br>
+
+<a href="#" class="btn">Upgrade</a>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+© 2026 DevHub. Create. Animate. Inspire.
+</footer>
+
+</body>
+</html>
