@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard • DevHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <!-- Navbar -->
+    <nav class="border-b border-slate-800 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-film text-white text-2xl"></i>
+                </div>
+                <span class="font-display text-2xl font-semibold">DevHub</span>
+            </div>
+            
+            <div class="flex items-center gap-x-4">
+                <div id="user-info" class="flex items-center gap-x-3 text-sm">
+                    <!-- Populated by JS -->
+                </div>
+                <button onclick="logout()" 
+                        class="px-4 py-2 text-sm border border-slate-700 hover:bg-slate-800 rounded-2xl flex items-center gap-x-2">
+                    <i class="fa-solid fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-6 py-10">
+        <!-- Welcome Header -->
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h1 class="text-4xl font-display tracking-tight">Welcome back!</h1>
+                <p class="text-slate-400 mt-1">Manage your movie projects here</p>
+            </div>
+            <button onclick="showCreateProjectModal()" 
+                    class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 transition-all rounded-2xl font-semibold flex items-center gap-x-2">
+                <i class="fa-solid fa-plus"></i>
+                <span>New Movie Project</span>
+            </button>
+        </div>
+
+        <!-- Projects Grid -->
+        <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Projects loaded dynamically -->
+        </div>
+        
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-16">
+            <i class="fa-solid fa-folder-open text-6xl text-slate-700 mb-4"></i>
+            <h3 class="text-xl font-semibold mb-2">No projects yet</h3>
+            <p class="text-slate-400 mb-6">Create your first movie project to get started.</p>
+            <button onclick="showCreateProjectModal()" 
+                    class="px-6 py-3 bg-white text-slate-950 font-semibold rounded-2xl">Create your first project</button>
+        </div>
+    </div>
+
+    <!-- Create Project Modal -->
+    <div id="create-modal" onclick="hideCreateModal()" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-8">
+            <h3 class="text-2xl font-semibold mb-6">Create New Movie Project</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1.5">Project Name</label>
+                    <input id="project-name" type="text" placeholder="My Awesome Short Film" 
+                           class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3 focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1.5">Description (optional)</label>
+                    <textarea id="project-desc" rows="3" placeholder="A sci-fi story about..." 
+                              class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3 focus:outline-none focus:border-indigo-500"></textarea>
+                </div>
+            </div>
+            
+            <div class="flex gap-x-3 mt-8">
+                <button onclick="hideCreateModal()" 
+                        class="flex-1 py-3 border border-slate-700 hover:bg-slate-800 rounded-2xl font-medium">Cancel</button>
+                <button onclick="createProject()" 
+                        class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-semibold">Create Project</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== SUPABASE CONFIG (already filled for you) ==========
+        const SUPABASE_URL = 'https://rdpsozcgirflvtqlvsim.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkcHNvemNnaXJmbHZ0cWx2c2ltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMzc1MDQsImV4cCI6MjA5NjkxMzUwNH0.2Nl7FqQR0DgO5zM4I1czuHkPqXmKFaX6-7DDlyQ7FAY';
+        // ============================================================
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let currentUser = null;
+
+        async function checkUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+            document.getElementById('user-info').innerHTML = `
+                <div class="flex items-center gap-x-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
+                        ${user.email[0].toUpperCase()}
+                    </div>
+                    <span class="text-sm">${user.email}</span>
+                </div>
+            `;
+            loadProjects();
+        }
+
+        async function loadProjects() {
+            const { data, error } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            const grid = document.getElementById('projects-grid');
+            const empty = document.getElementById('empty-state');
+            grid.innerHTML = '';
+
+            if (error || !data || data.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            data.forEach(project => {
+                const card = document.createElement('div');
+                card.className = `bg-slate-900 border border-slate-700 rounded-3xl p-6 hover:border-indigo-500 transition-all`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-semibold text-xl">${project.name}</h3>
+                            <p class="text-xs text-slate-500 mt-1">${new Date(project.created_at).toLocaleDateString()}</p>
+                        </div>
+                        <i class="fa-solid fa-film text-indigo-400 text-xl"></i>
+                    </div>
+                    <p class="text-slate-400 text-sm line-clamp-3 mb-6">${project.description || 'No description yet.'}</p>
+                    
+                    <div class="flex gap-x-2">
+                        <button onclick="event.stopImmediatePropagation(); openProject('${project.id}')" 
+                                class="flex-1 py-2.5 text-sm bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-medium">
+                            Open in Studio
+                        </button>
+                        <button onclick="event.stopImmediatePropagation(); deleteProject('${project.id}', this)" 
+                                class="px-4 py-2.5 text-sm border border-slate-700 hover:bg-red-900/30 hover:border-red-700 rounded-2xl text-red-400">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showCreateProjectModal() {
+            document.getElementById('create-modal').classList.remove('hidden');
+            document.getElementById('create-modal').classList.add('flex');
+        }
+        
+        function hideCreateModal() {
+            document.getElementById('create-modal').classList.add('hidden');
+            document.getElementById('create-modal').classList.remove('flex');
+        }
+
+        async function createProject() {
+            const name = document.getElementById('project-name').value.trim();
+            const desc = document.getElementById('project-desc').value.trim();
+            
+            if (!name) {
+                alert('Please enter a project name');
+                return;
+            }
+
+            const { error } = await supabase.from('projects').insert({
+                user_id: currentUser.id,
+                name: name,
+                description: desc || null
+            });
+
+            if (error) {
+                alert('Error creating project: ' + error.message);
+                return;
+            }
+
+            hideCreateModal();
+            document.getElementById('project-name').value = '';
+            document.getElementById('project-desc').value = '';
+            loadProjects();
+        }
+
+        async function deleteProject(projectId, buttonElement) {
+            if (!confirm('Delete this project? This cannot be undone.')) return;
+            
+            const { error } = await supabase.from('projects').delete().eq('id', projectId);
+            if (error) {
+                alert('Error deleting project: ' + error.message);
+                return;
+            }
+            buttonElement.closest('.bg-slate-900').remove();
+        }
+
+        function openProject(projectId) {
+            alert('Phase 3 coming soon! This will open the interactive 3D Previz Studio for this project.');
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        window.onload = function() {
+            checkUser();
+        }
+    </script>
+</body>
+      </html>
