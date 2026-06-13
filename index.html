@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevHub - Create Worlds. Tell Stories.</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    background:#0f0f0f;
+    color:white;
+}
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    background:#111;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    border-bottom:1px solid #222;
+}
+
+.logo{
+    font-size:32px;
+    font-weight:bold;
+    color:#d4af37;
+}
+
+.logo span{
+    color:#c1121f;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:25px;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:#d4af37;
+}
+
+.hero{
+    min-height:90vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px;
+    background:
+    linear-gradient(rgba(0,0,0,.75),
+    rgba(0,0,0,.75)),
+    url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3');
+    background-size:cover;
+    background-position:center;
+}
+
+.hero-content h1{
+    font-size:70px;
+    margin-bottom:20px;
+}
+
+.hero-content span{
+    color:#d4af37;
+}
+
+.hero-content p{
+    max-width:700px;
+    margin:auto;
+    font-size:20px;
+    color:#ddd;
+    margin-bottom:35px;
+}
+
+.btn{
+    display:inline-block;
+    padding:15px 35px;
+    background:#c1121f;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    margin:10px;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+}
+
+.btn-gold{
+    background:#d4af37;
+    color:black;
+}
+
+section{
+    padding:80px 8%;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.title h2{
+    font-size:42px;
+    color:#d4af37;
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:#181818;
+    padding:30px;
+    border-radius:15px;
+    border:1px solid #222;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    border-color:#d4af37;
+}
+
+.card h3{
+    margin-bottom:15px;
+    color:#d4af37;
+}
+
+.pricing{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.plan{
+    background:#181818;
+    padding:35px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.plan h3{
+    color:#d4af37;
+}
+
+.price{
+    font-size:45px;
+    margin:20px 0;
+    color:#c1121f;
+}
+
+.plan ul{
+    list-style:none;
+    margin:25px 0;
+}
+
+.plan li{
+    margin:10px 0;
+}
+
+footer{
+    background:#111;
+    text-align:center;
+    padding:30px;
+    border-top:1px solid #222;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Dev<span>Hub</span></div>
+
+    <nav>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Login</a>
+        <a href="#">Sign Up</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Create <span>Worlds</span><br>Tell Stories</h1>
+
+        <p>
+            Build characters, scenes, soundtracks and movies
+            from one powerful creative platform.
+        </p>
+
+        <a href="#" class="btn">Start Creating</a>
+        <a href="#" class="btn btn-gold">Watch Demo</a>
+    </div>
+</section>
+
+<section>
+    <div class="title">
+        <h2>Features</h2>
+    </div>
+
+    <div class="features">
+
+        <div class="card">
+            <h3>🎭 Character Creator</h3>
+            <p>Create anime characters with detailed profiles.</p>
+        </div>
+
+        <div class="card">
+            <h3>🌍 Scene Builder</h3>
+            <p>Build cinematic scenes and story worlds.</p>
+        </div>
+
+        <div class="card">
+            <h3>🎵 Audio Studio</h3>
+            <p>Add music, sound effects and voice acting.</p>
+        </div>
+
+        <div class="card">
+            <h3>🎬 Movie Builder</h3>
+            <p>Combine scenes into complete animated movies.</p>
+        </div>
+
+        <div class="card">
+            <h3>🤖 AI Assistant</h3>
+            <p>Generate ideas, stories and creative assets.</p>
+        </div>
+
+        <div class="card">
+            <h3>☁ Cloud Projects</h3>
+            <p>Save and manage your projects anywhere.</p>
+        </div>
+
+    </div>
+</section>
+
+<section>
+    <div class="title">
+        <h2>Pricing</h2>
+    </div>
+
+    <div class="pricing">
+
+        <div class="plan">
+            <h3>Free</h3>
+            <div class="price">R0</div>
+
+            <ul>
+                <li>3 Projects</li>
+                <li>720p Export</li>
+                <li>Basic Assets</li>
+            </ul>
+
+            <a href="#" class="btn">Get Started</a>
+        </div>
+
+        <div class="plan">
+            <h3>Creator</h3>
+            <div class="price">R99</div>
+
+            <ul>
+                <li>Unlimited Projects</li>
+                <li>1080p Export</li>
+                <li>Premium Assets</li>
+            </ul>
+
+            <a href="#" class="btn">Choose Plan</a>
+        </div>
+
+        <div class="plan">
+            <h3>Studio Pro</h3>
+            <div class="price">R299</div>
+
+            <ul>
+                <li>Team Collaboration</li>
+                <li>Commercial Use</li>
+                <li>Priority Support</li>
+            </ul>
+
+            <a href="#" class="btn btn-gold">Go Pro</a>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    <h3>DevHub Studios</h3>
+    <p>Create Worlds. Tell Stories.</p>
+    <br>
+    <p>© 2026 DevHub. All Rights Reserved.</p>
+</footer>
+
+</body>
+  </html>
