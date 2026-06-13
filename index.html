@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevHub • Web Movie Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #6366f1;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .cinematic-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1135 100%);
+        }
+
+        .section-header {
+            font-size: 2.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+        }
+
+        .feature-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .nav-link {
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: #6366f1;
+        }
+
+        .studio-accent {
+            color: #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <!-- Navbar -->
+    <nav class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-x-3">
+                    <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-film text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-display text-3xl font-semibold tracking-tighter">DevHub</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-x-8 text-sm">
+                    <a href="#features" class="nav-link text-slate-300 hover:text-white">Features</a>
+                    <a href="#pricing" class="nav-link text-slate-300 hover:text-white">Pricing</a>
+                    <a href="#" class="nav-link text-slate-300 hover:text-white">Docs</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-x-3">
+                    <button onclick="showLoginModal()" 
+                            class="px-5 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                        Log in
+                    </button>
+                    <button onclick="showSignupModal()" 
+                            class="px-5 py-2 bg-white text-slate-950 rounded-2xl text-sm font-semibold hover:bg-slate-100 transition-all active:scale-[0.985]">
+                        Get started free
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-slate-300" onclick="toggleMobileMenu()">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="pt-20 pb-16 cinematic-bg">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-x-2 bg-slate-900 border border-slate-700 rounded-full px-4 py-1.5 mb-6">
+                <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span class="text-sm font-medium text-emerald-400">Now in early access • Join 2,400+ filmmakers</span>
+            </div>
+            
+            <h1 class="text-6xl md:text-7xl font-display tracking-tighter leading-none mb-6">
+                Your movie studio.<br>
+                <span class="studio-accent">In the browser.</span>
+            </h1>
+            
+            <p class="max-w-2xl mx-auto text-xl text-slate-400 mb-10">
+                DevHub is the collaborative web platform for indie filmmakers. 
+                Create 3D previz scenes inspired by Blender, manage productions, 
+                and work with your team — all in one place.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="showSignupModal()" 
+                        class="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 transition-all text-white font-semibold rounded-3xl text-lg flex items-center justify-center gap-x-3 active:scale-[0.985]">
+                    <span>Start for free</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                
+                <button onclick="document.getElementById('demo-section').scrollIntoView({ behavior: 'smooth' })" 
+                        class="px-8 py-4 border border-slate-700 hover:bg-slate-900 transition-all font-semibold rounded-3xl text-lg flex items-center justify-center gap-x-3">
+                    <i class="fa-solid fa-play mr-2"></i>
+                    <span>Watch 1-min demo</span>
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-500 mt-6">No credit card required • Free plan available forever</p>
+        </div>
+    </div>
+
+    <!-- Trust / Stats -->
+    <div class="max-w-5xl mx-auto px-6 py-8 border-b border-slate-800">
+        <div class="flex flex-wrap justify-center items-center gap-x-10 gap-y-4 text-sm text-slate-400">
+            <div class="flex items-center gap-x-2">
+                <i class="fa-solid fa-users text-emerald-400"></i>
+                <span>2,400+ creators</span>
+            </div>
+            <div>Featured in IndieWire &amp; No Film School</div>
+            <div>Built with ❤️ for filmmakers</div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="max-w-7xl mx-auto px-6 py-20">
+        <div class="text-center mb-14">
+            <div class="text-indigo-400 font-semibold tracking-widest text-sm mb-3">POWERFUL &amp; SIMPLE</div>
+            <h2 class="section-header tracking-tighter">Everything you need to make your film</h2>
+            <p class="text-slate-400 mt-3 max-w-md mx-auto">Blender-inspired 3D tools + production management in one modern web app.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-7">
+                <div class="w-12 h-12 bg-indigo-600/10 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-cube text-indigo-400 text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">3D Previz Studio</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Interactive 3D scenes powered by Three.js. Position cameras, lights, props and characters. Import models from Blender.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-7">
+                <div class="w-12 h-12 bg-indigo-600/10 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-folder-tree text-indigo-400 text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">Project Hub</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Organize scripts, shot lists, storyboards, and assets in one place. Version history included.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-7">
+                <div class="w-12 h-12 bg-indigo-600/10 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-users text-indigo-400 text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">Real-time Collaboration</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Work with your team live. Comment on scenes, assign tasks, and review shots together.</p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-7">
+                <div class="w-12 h-12 bg-indigo-600/10 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-globe text-indigo-400 text-3xl"></i>
+                </div>
+                <h3 class="font-semibold text-xl mb-3">Works Anywhere</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">No installation required. Open DevHub on any device and keep creating.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Teaser -->
+    <div id="demo-section" class="max-w-5xl mx-auto px-6 py-16 border-y border-slate-800 bg-slate-900/50">
+        <div class="text-center">
+            <div class="inline-block px-4 py-1 bg-slate-800 rounded-full text-sm mb-4">COMING IN PHASE 3</div>
+            <h3 class="text-3xl font-semibold tracking-tight mb-3">Interactive 3D Previz Studio</h3>
+            <p class="text-slate-400 max-w-md mx-auto mb-8">Build shots like in Blender — right in your browser. Orbit, add objects, set up lighting, and save camera angles.</p>
+            
+            <div class="max-w-3xl mx-auto bg-slate-950 border border-slate-700 rounded-3xl p-8 text-left">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="font-medium">Scene: Opening Shot — Rooftop Chase</div>
+                    <div class="text-xs px-3 py-1 bg-emerald-900 text-emerald-400 rounded-full">LIVE PREVIEW</div>
+                </div>
+                <div class="aspect-video bg-slate-900 rounded-2xl flex items-center justify-center border border-slate-700">
+                    <div class="text-center">
+                        <i class="fa-solid fa-play text-5xl text-slate-600 mb-3"></i>
+                        <p class="text-sm text-slate-500">Interactive Three.js demo will appear here in Phase 3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div id="pricing" class="max-w-5xl mx-auto px-6 py-20">
+        <div class="text-center mb-12">
+            <h2 class="section-header tracking-tighter">Simple pricing.<br>Start free, upgrade anytime.</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <!-- Free Plan -->
+            <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <div class="font-semibold text-2xl">Free</div>
+                        <div class="text-slate-400">Forever</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-4xl font-semibold">$0</span>
+                    </div>
+                </div>
+                
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> Up to 3 movie projects</li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> Basic 3D scene viewer</li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> Community support</li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> Public projects</li>
+                </ul>
+                
+                <button onclick="showSignupModal()" 
+                        class="w-full py-3.5 border border-slate-700 hover:bg-slate-800 transition-colors rounded-2xl font-semibold">
+                    Get started free
+                </button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="bg-slate-900 border-2 border-indigo-500 rounded-3xl p-8 relative">
+                <div class="absolute -top-3 right-6 bg-indigo-600 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR</div>
+                
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <div class="font-semibold text-2xl">Pro</div>
+                        <div class="text-slate-400">For serious creators</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-4xl font-semibold">$12</span>
+                        <span class="text-slate-400 text-sm">/mo</span>
+                    </div>
+                </div>
+                
+                <ul class="space-y-3 text-sm mb-8">
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> <strong>Unlimited</strong> movie projects</li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> Full 3D Previz Studio + imports from Blender</li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> Advanced tools, exports &amp; rendering previews</li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> Team collaboration &amp; private projects</li>
+                    <li class="flex items-center gap-x-3"><i class="fa-solid fa-check text-emerald-400 w-4"></i> Priority support</li>
+                </ul>
+                
+                <button onclick="showSignupModal()" 
+                        class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 transition-all rounded-2xl font-semibold">
+                    Start 14-day free trial
+                </button>
+                <p class="text-center text-xs text-slate-500 mt-3">Cancel anytime. No credit card required for trial.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="max-w-3xl mx-auto px-6 pb-20 text-center">
+        <h2 class="text-4xl font-display tracking-tighter mb-4">Ready to start building your film?</h2>
+        <p class="text-slate-400 mb-8">Join thousands of filmmakers creating with DevHub today.</p>
+        <button onclick="showSignupModal()" 
+                class="px-10 py-4 bg-white text-slate-950 font-semibold rounded-3xl text-lg hover:bg-slate-100 transition-all active:scale-[0.985]">
+            Create your free account
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-10">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-slate-500">
+            <p>DevHub © 2026 • Made for creators who love making movies</p>
+            <div class="mt-2 flex justify-center gap-x-6 text-xs">
+                <a href="#" class="hover:text-slate-300">Privacy</a>
+                <a href="#" class="hover:text-slate-300">Terms</a>
+                <a href="#" class="hover:text-slate-300">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" onclick="hideModals()" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-8">
+            <h3 class="text-2xl font-semibold mb-1">Welcome back</h3>
+            <p class="text-slate-400 text-sm mb-6">Sign in to continue to DevHub</p>
+            
+            <div class="space-y-4">
+                <input type="email" placeholder="you@email.com" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3.5 text-sm focus:outline-none focus:border-indigo-500">
+                <input type="password" placeholder="Password" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3.5 text-sm focus:outline-none focus:border-indigo-500">
+                
+                <button onclick="simulateLogin()" class="w-full py-3.5 bg-white text-slate-950 font-semibold rounded-2xl">Log in</button>
+            </div>
+            
+            <p class="text-center text-xs text-slate-500 mt-6">Don't have an account? <span onclick="hideModals(); showSignupModal()" class="text-indigo-400 cursor-pointer">Sign up</span></p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signup-modal" onclick="hideModals()" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-6">
+        <div onclick="event.stopImmediatePropagation()" class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-8">
+            <h3 class="text-2xl font-semibold mb-1">Create your account</h3>
+            <p class="text-slate-400 text-sm mb-6">Start building for free. Upgrade later.</p>
+            
+            <div class="space-y-4">
+                <input type="text" placeholder="Full name" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3.5 text-sm focus:outline-none focus:border-indigo-500">
+                <input type="email" placeholder="you@email.com" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3.5 text-sm focus:outline-none focus:border-indigo-500">
+                <input type="password" placeholder="Create a password" class="w-full bg-slate-950 border border-slate-700 rounded-2xl px-5 py-3.5 text-sm focus:outline-none focus:border-indigo-500">
+                
+                <button onclick="simulateSignup()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 transition-all text-white font-semibold rounded-2xl">Create free account</button>
+            </div>
+            
+            <p class="text-center text-xs text-slate-500 mt-6">By signing up you agree to our Terms &amp; Privacy Policy.</p>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#6366f1');
+        }
+        
+        function toggleMobileMenu() {
+            alert("Mobile menu would open here. We'll improve this in later phases!");
+        }
+        
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('login-modal').classList.add('flex');
+        }
+        
+        function showSignupModal() {
+            document.getElementById('signup-modal').classList.remove('hidden');
+            document.getElementById('signup-modal').classList.add('flex');
+        }
+        
+        function hideModals() {
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('flex');
+            document.getElementById('signup-modal').classList.add('hidden');
+            document.getElementById('signup-modal').classList.remove('flex');
+        }
+        
+        function simulateLogin() {
+            const modal = document.getElementById('login-modal');
+            modal.innerHTML = `
+                <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-8 text-center">
+                    <i class="fa-solid fa-check-circle text-emerald-400 text-5xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Logged in successfully!</h3>
+                    <p class="text-slate-400 mb-6">Welcome back to DevHub.</p>
+              
