@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chata P2P</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <style>
+    .wa-bg { background: #0b141a; }
+    .wa-header { background: #202c33; }
+    .wa-green { background: #00a884; }
+    .msg-me { background: #005c4b; }
+    .msg-you { background: #202c33; }
+  </style>
+</head>
+<body class="wa-bg text-gray-100 h-screen flex flex-col">
+
+  <!-- START SCREEN -->
+  <div id="start" class="h-full flex items-center justify-center">
+    <div class="wa-header p-6 rounded-lg w-80 text-center">
+      <h1 class="text-2xl font-bold text-[#00a884] mb-4">Chata P2P</h1>
+      <div class="text-sm text-gray-400 mb-4">Your ID:</div>
+      <div id="my-id" class="bg-[#2a3942] p-3 rounded mb-4 font-mono text-sm break-all">Loading...</div>
+      <button onclick="copyID()" class="w-full border border-[#00a884] text-[#00a884] p-2 rounded mb-4">Copy My ID</button>
+      <input id="friend-id" placeholder="Paste friend's ID here" class="w-full bg-[#2a3942] p-3 rounded mb-3 outline-none text-sm">
+      <button onclick="connect()" class="w-full wa-green p-3 rounded font-bold">Connect & Chat</button>
+      <div class="text-xs text-gray-500 mt-4">No servers. Direct phone-to-phone. Both must be online.</div>
+    </div>
+  </div>
+
+  <!-- CHAT SCREEN -->
+  <div id="chat" class="hidden h-full flex flex-col">
+    <div class="wa-header p-3 flex items-center gap-3">
+      <button onclick="disconnect()" class="text-xl">←</button>
+      <div class="w-10 h-10 bg-gray-500 rounded-full"></div>
+      <div class="flex-1">
+        <div id="peer-name" class="font-medium">Friend</div>
+        <div id="status" class="text-xs text-green-400">Connected</div>
+      </div>
+    </div>
+    <div id="msgs" class="flex-1 overflow-y-auto p-3 space-y-1" style="background-image:url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')"></div>
+    <div class="wa-header p-2 flex items-end gap-2">
+      <input id="msginput" placeholder="Message" class="flex-1 bg-[#2a3942] rounded-2xl px-4 py-2 outline-none">
+      <button onclick="sendMsg()" class="wa-green w-12 h-12 rounded-full text-xl">➤</button>
+    </div>
+  </div>
+
+<script>
+let peer, conn
+const myId = 'chata-' + Math.random().toString(36).substr(2, 9)
+
+// Start PeerJS
+peer = new Peer(myId, { debug: 2 })
+peer.on('open', id => {
+  document.getElementById('my-id').textContent = id
+})
+
+peer.on('connection', c => {
+  conn = c
+  setupConnection()
+})
+
+function copyID() {
+  navigator.clipboard.writeText(myId)
+  alert('ID copied! Send to your friend')
+}
+
+function connect() {
+  const friendId = document.getElementById('friend-id').value.trim()
+  if (!friendId) return alert('Paste friend ID first')
+  conn = peer.connect(friendId)
+  setupConnection()
+}
+
+function setupConnection() {
+  conn.on('open', () => {
+    document.getElementById('start').classList.add('hidden')
+    document.getElementById('chat').classList.remove('hidden')
+    document.getElementById('peer-name').textContent = conn.peer.substring(0,12)
+  })
+  
+  conn.on('data', data => {
+    addMsg(data, false)
+  })
+  
+  conn.on('close', () => {
+    document.getElementById('status').textContent = 'Disconnected'
+    document.getElementById('status').classList.remove('text-green-400')
+    document.getElementById('status').classList.add('text-red-400')
+  })
+}
+
+function sendMsg() {
+  const text = document.getElementById('msginput').value.trim()
+  if (!text || !conn) return
+  conn.send(text)
+  addMsg(text, true)
+  document.getElementById('msginput').value = ''
+}
+
+function addMsg(text, me) {
+  const time = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})
+  document.getElementById('msgs').innerHTML += `
+    <div class="flex ${me?'justify-end':'justify-start'}">
+      <div class="${me?'msg-me':'msg-you'} rounded-lg px-2 py-1.5 max-w-[75%] text-sm">
+        ${text}
+        <span class="text-[10px] text-gray-300 ml-2">${time}</span>
+      </div>
+    </div>`
+  document.getElementById('msgs').scrollTop = 9e9
+}
+
+function disconnect() {
+  if (conn) conn.close()
+  document.getElementById('chat').classList.add('hidden')
+  document.getElementById('start').classList.remove('hidden')
+  document.getElementById('msgs').innerHTML = ''
+}
+
+document.getElementById('msginput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') sendMsg()
+})
+</script>
+</body>
+  </html>
