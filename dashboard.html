@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevHub Studios Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#0d0d0d;
+    color:white;
+}
+
+header{
+    background:#111;
+    border-bottom:2px solid gold;
+    padding:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+    color:gold;
+}
+
+.logo span{
+    color:#d40000;
+}
+
+.logout{
+    background:#d40000;
+    color:white;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.dashboard{
+    padding:30px;
+}
+
+.welcome{
+    margin-bottom:30px;
+}
+
+.welcome h1{
+    color:gold;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#161616;
+    border:1px solid #333;
+    border-radius:12px;
+    padding:25px;
+    text-align:center;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.card:hover{
+    border-color:gold;
+    transform:translateY(-5px);
+}
+
+.card h2{
+    color:gold;
+    margin-bottom:10px;
+}
+
+.projects{
+    margin-top:40px;
+}
+
+.project-box{
+    background:#161616;
+    padding:20px;
+    border-radius:12px;
+    margin-top:15px;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        Dev<span>Hub</span> Studios
+    </div>
+
+    <button class="logout" onclick="location.href='login.html'">
+        Logout
+    </button>
+</header>
+
+<div class="dashboard">
+
+    <div class="welcome">
+        <h1>Welcome to DevHub Studios</h1>
+        <p>Create characters, scenes, sounds and full animated movies.</p>
+    </div>
+
+    <div class="grid">
+
+        <div class="card" onclick="alert('Create New Project')">
+            <h2>🎬 New Project</h2>
+            <p>Start a new movie.</p>
+        </div>
+
+        <div class="card" onclick="location.href='characters.html'">
+            <h2>🐭 Characters</h2>
+            <p>Create and manage characters.</p>
+        </div>
+
+        <div class="card" onclick="location.href='scenes.html'">
+            <h2>🌍 Scenes</h2>
+            <p>Create movie scenes.</p>
+        </div>
+
+        <div class="card" onclick="location.href='sounds.html'">
+            <h2>🎵 Sounds</h2>
+            <p>Add music and effects.</p>
+        </div>
+
+        <div class="card">
+            <h2>🤖 AI Tools</h2>
+            <p>Generate stories and ideas.</p>
+        </div>
+
+        <div class="card">
+            <h2>📤 Export Movie</h2>
+            <p>Export your final animation.</p>
+        </div>
+
+    </div>
+
+    <div class="projects">
+
+        <h2 style="color:gold;">Recent Projects</h2>
+
+        <div class="project-box">
+            No projects yet. Create your first movie!
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+  </html>
