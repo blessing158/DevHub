@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AnimStudio 3D PRO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <style>
+    :root {
+      --bg-darker: #131313; --bg-dark: #1e1e1e; --bg-panel: #2d2d2d; --bg-hover: #3d3d3d;
+      --border: #444; --text: #ddd; --text-dim: #888; --accent: #4772b3; --accent-alt: #cc7832;
+    }
+    * { margin: 0; box-sizing: border-box; font-family: 'Consolas', 'Monaco', monospace; user-select: none; }
+    body { background: var(--bg-darker); color: var(--text); overflow: hidden; font-size: 11px; }
+ .app { display: flex; flex-direction: column; height: 100vh; }
+
+  /* TOP BAR - Blender Info Bar */
+ .topbar { height: 22px; background: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 5px; }
+ .menu { padding: 0 8px; height: 100%; display: flex; align-items: center; position: relative; }
+ .menu:hover { background: var(--bg-hover); }
+ .dropdown { display: none; position: absolute; top: 22px; left: 0; background: var(--bg-panel); border: 1px solid var(--border); min-width: 180px; z-index: 1000; }
+ .menu:hover.dropdown { display: block; }
+ .dropdown-item { padding: 4px 20px; white-space: nowrap; }
+ .dropdown-item:hover { background: var(--accent); }
+ .dropdown-sep { height: 1px; background: var(--border); margin: 2px 0; }
+
+  /* MAIN SPLIT */
+ .editor { flex: 1; display: flex; }
+ .main-area { flex: 1; display: flex; flex-direction: column; }
+ .viewport { flex: 1; position: relative; background: #393939; }
+    #c { width: 100%; height: 100%; display: block; }
+
+  /* BLENDER HEADER IN VIEWPORT */
+ .viewport-header { height: 24px; background: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 5px; gap: 2px; }
+ .header-btn { height: 20px; padding: 0 6px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 3px; font-size: 11px; }
+ .header-btn.active { background: var(--accent); border-color: var(--accent); }
+ .header-select { height: 20px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text); font-size: 11px; }
+
+  /* TOOL SHELF - Left */
+ .tool-shelf { width: 32px; background: var(--bg-panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 4px 2px; gap: 2px; }
+ .tool-btn { width: 28px; height: 28px; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+ .tool-btn:hover,.tool-btn.active { background: var(--accent); }
+
+  /* PROPERTIES - Right - Collapsed by default */
+ .properties { width: 0; background: var(--bg-panel); border-left: 1px solid var(--border); transition: width 0.2s; overflow: hidden; }
+ .properties.open { width: 280px; }
+ .prop-header { height: 24px; background: var(--bg-dark); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 8px; }
+ .prop-tabs { display: flex; background: var(--bg-dark); border-bottom: 1px solid var(--border); }
+ .prop-tab { padding: 6px 8px; font-size: 16px; border-right: 1px solid var(--border); }
+ .prop-tab.active { background: var(--bg-panel); }
+ .prop-content { padding: 8px; overflow-y: auto; height: calc(100% - 48px); }
+ .prop-group { margin-bottom: 12px; }
+ .prop-group-title { color: var(--text-dim); margin-bottom: 4px; font-size: 10px; text-transform: uppercase; }
+ .prop-row { display: flex; align-items: center; margin: 3px 0; gap: 5px; }
+ .prop-label { width: 60px; color: var(--text-dim); text-align: right; }
+ .prop-value { flex: 1; background: var(--bg-darker); border: 1px solid var(--border); color: var(--text); padding: 2px 4px; font-size: 11px; }
+
+  /* TIMELINE - Bottom - Collapsed by default */
+ .timeline { height: 24px; background: var(--bg-panel); border-top: 1px solid var(--border); transition: height 0.2s; overflow: hidden; }
+ .timeline.open { height: 180px; }
+ .timeline-header { height: 24px; background: var(--bg-dark); display: flex; align-items: center; padding: 0 5px; gap: 5px; border-bottom: 1px solid var(--border); }
+ .timeline-area { height: calc(100% - 24px); position: relative; background: var(--bg-darker); }
+ .timeline-ruler { height: 20px; background: var(--bg-panel); border-bottom: 1px solid var(--border); position: relative; }
+ .timeline-cursor { width: 1px; height: 100%; background: #fff; position: absolute; top: 0; pointer-events: none; }
+ .timeline-track { height: 24px; border-bottom: 1px solid #222; position: relative; }
+ .keyframe { width: 6px; height: 6px; background: #ffcc00; transform: rotate(45deg); position: absolute; top: 9px; }
+
+  /* OUTLINER - Floating */
+ .outliner { position: absolute; top: 46px; right: 10px; width: 200px; background: var(--bg-panel); border: 1px solid var(--border); display: none; z-index: 100; }
+ .outliner.open { display: block; }
+ .outliner-header { height: 20px; background: var(--bg-dark); padding: 0 5px; display: flex; align-items: center; justify-content: space-between; }
+ .outliner-item { padding: 2px 8px; cursor: pointer; }
+ .outliner-item:hover,.outliner-item.selected { background: var(--accent); }
+
+  /* STATUS BAR */
+ .statusbar { height: 18px; background: var(--bg-panel); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 8px; font-size: 10px; color: var(--text-dim); }
+
+  /* HOTKEY HINT */
+ .hotkey { float: right; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="menu">File
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="newScene()">New <span class="hotkey">Ctrl+N</span></div>
+        <div class="dropdown-item" onclick="saveProject()">Save <span class="hotkey">Ctrl+S</span></div>
+        <div class="dropdown-item" onclick="loadProject()">Open <span class="hotkey">Ctrl+O</span></div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item" onclick="exportGLB()">Export GLB</div>
+        <div class="dropdown-item" onclick="exportFBX()">Export FBX</div>
+      </div>
+    </div>
+    <div class="menu">Edit
+      <div class="dropdown">
+        <div class="dropdown-item">Undo <span class="hotkey">Ctrl+Z</span></div>
+        <div class="dropdown-item">Redo <span class="hotkey">Ctrl+Shift+Z</span></div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item" onclick="deleteSelected()">Delete <span class="hotkey">X</span></div>
+      </div>
+    <div class="menu">Add
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="addPrimitive('cube')">Mesh > Cube</div>
+        <div class="dropdown-item" onclick="addPrimitive('sphere')">Mesh > UV Sphere</div>
+        <div class="dropdown-item" onclick="addPrimitive('cylinder')">Mesh > Cylinder</div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item" onclick="addPrimitive('light')">Light > Point</div>
+        <div class="dropdown-item" onclick="addPrimitive('camera')">Camera</div>
+      </div>
+    </div>
+    <div class="menu">Animation
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="addKeyframe()">Insert Keyframe <span class="hotkey">I</span></div>
+        <div class="dropdown-item" onclick="deleteKeyframe()">Delete Keyframe <span class="hotkey">Alt+I</span></div>
+      </div>
+    </div>
+    <div class="menu">Window
+      <div class="dropdown">
+        <div class="dropdown-item" onclick="togglePanel('outliner')">Toggle Outliner <span class="hotkey">F9</span></div>
+        <div class="dropdown-item" onclick="togglePanel('properties')">Toggle Properties <span class="hotkey">N</span></div>
+        <div class="dropdown-item" onclick="togglePanel('timeline')">Toggle Timeline <span class="hotkey">T</span></div>
+      </div>
+    </div>
+    <div style="margin-left:auto;color:var(--text-dim)">AnimStudio 3D PRO v0.1</div>
+  </div>
+
+  <div class="editor">
+    <!-- TOOL SHELF -->
+    <div class="tool-shelf">
+      <div class="tool-btn active" title="Select [Q]" onclick="setTool('select')">↖</div>
+      <div class="tool-btn" title="Move [G]" onclick="setTool('move')">✥</div>
+      <div class="tool-btn" title="Rotate [R]" onclick="setTool('rotate')">↻</div>
+      <div class="tool-btn" title="Scale [S]" onclick="setTool('scale')">⤡</div>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="main-area">
+      <div class="viewport-header">
+        <select class="header-select" id="editorType">
+          <option>3D Viewport</option>
+          <option>Timeline</option>
+          <option>Outliner</option>
+        </select>
+        <select class="header-select" id="viewMode">
+          <option>Object Mode</option>
+          <option>Edit Mode</option>
+          <option>Pose Mode</option>
+        </select>
+        <button class="header-btn" onclick="viewFrameSelected()">View Selected [Numpad.]</button>
+        <button class="header-btn" onclick="toggleShading()">Shading</button>
+        <div style="margin-left:auto">
+          <button class="header-btn" onclick="togglePanel('properties')">Properties [N]</button>
+        </div>
+      </div>
+      <div class="viewport">
+        <canvas id="c"></canvas>
+        <!-- FLOATING OUTLINER -->
+        <div class="outliner" id="outliner">
+          <div class="outliner-header">
+            <span>Outliner</span>
+            <span onclick="togglePanel('outliner')" style="cursor:pointer">✕</span>
+          </div>
+          <div id="outlinerContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROPERTIES PANEL -->
+    <div class="properties" id="properties">
+      <div class="prop-header">Properties</div>
+      <div class="prop-tabs">
+        <div class="prop-tab active" title="Object">⬚</div>
+        <div class="prop-tab" title="Modifiers">🔧</div>
+        <div class="prop-tab" title="Material">●</div>
+        <div class="prop-tab" title="World">🌍</div>
+      </div>
+      <div class="prop-content">
+        <div class="prop-group">
+          <div class="prop-group-title">Transform</div>
+          <div class="prop-row"><div class="prop-label">Location X</div><input class="prop-value" id="locX" type="number" step="0.1" oninput="updateTransform()"></div>
+          <div class="prop-row"><div class="prop-label">Y</div><input class="prop-value" id="locY" type="number" step="0.1" oninput="updateTransform()"></div>
+          <div class="prop-row"><div class="prop-label">Z</div><input class="prop-value" id="locZ" type="number" step="0.1" oninput="updateTransform()"></div>
+          <div class="prop-row"><div class="prop-label">Rotation X</div><input class="prop-value" id="rotX" type="number" step="1" oninput="updateTransform()"></div>
+          <div class="prop-row"><div class="prop-label">Y</div><input class="prop-value" id="rotY" type="number" step="1" oninput="updateTransform()"></div>
+          <div class="prop-row"><div class="prop-label">Z</div><input class="prop-value" id="rotZ" type="number" step="1" oninput="updateTransform()"></div>
+          <div class="prop-row"><div class="prop-label">Scale X</div><input class="prop-value" id="scaX" type="number" step="0.1" oninput="updateTransform()"></div>
+          <div class="prop-row"><div class="prop-label">Y</div><input class="prop-value" id="scaY" type="number" step="0.1" oninput="updateTransform()"></div>
+          <div class="prop-row"><div class="prop-label">Z</div><input class="prop-value" id="scaZ" type="number" step="0.1" oninput="updateTransform()"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline" id="timeline">
+    <div class="timeline-header">
+      <button class="header-btn" onclick="setFrame(0)">⏮</button>
+      <button class="header-btn" id="playBtn" onclick="togglePlay()">▶</button>
+      <button class="header-btn" onclick="setFrame(120)">⏭</button>
+      <span style="margin:0 10px">Frame:</span>
+      <input class="prop-value" style="width:50px" id="frameInput" value="0" onchange="setFrame(this.value)">
+      <span>/ 120</span>
+      <div style="margin-left:auto">
+        <button class="header-btn" onclick="addKeyframe()">Key [I]</button>
+      </div>
+    </div>
+    <div class="timeline-area">
+      <div class="timeline-ruler" id="ruler"></div>
+      <div class="timeline-track" id="track1"></div>
+      <div class="timeline-cursor" id="cursor"></div>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <span id="status">Ready | Verts: 0 | Faces: 0 | Tris: 0 | Objects: 1/1</span>
+    <span style="margin-left:auto">MMB: Orbit | Shift+MMB: Pan | Scroll: Zoom</span>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+
+// CORE
+const canvas = document.getElementById('c');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x393939);
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+camera.position.set(7, 5, 7);
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+const controls = new OrbitControls(camera, canvas);
+const transform = new TransformControls(camera, canvas);
+scene.add(transform);
+
+// GRID
+const grid = new THREE.GridHelper(20, 20, 0x555555, 0x333333);
+scene.add(grid);
+
+// LIGHTS
+scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.5));
+const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight.position.set(5, 10, 7);
+scene.add(dirLight);
+
+// STATE
+let objects = [], selected = null, currentFrame = 0, isPlaying = false;
+let keyframes = {}; // objId: {frame: {pos,rot,sca}}
+let currentTool = 'select';
+
+// UI TOGGLE
+window.togglePanel = (id) => {
+  document.getElementById(id).classList.toggle('open');
+  if(id === 'properties' || id === 'timeline') resize();
+};
+
+// TOOLS
+window.setTool = (tool) => {
+  currentTool = tool;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if(tool === 'select') transform.detach();
+  else { transform.setMode(tool); if(selected) transform.attach(selected); }
+};
+
+// ADD OBJECTS
+window.addPrimitive = (type) => {
+  let geo, mat = new THREE.MeshStandardMaterial({color: 0x999999});
+  if(type==='cube') geo = new THREE.BoxGeometry(2,2,2);
+  if(type==='sphere') geo = new THREE.SphereGeometry(1,32,16);
+  if(type==='cylinder') geo = new THREE.CylinderGeometry(1,1,2,32);
+  if(type==='light') {
+    const l = new THREE.PointLight(0xffffff,1,10);
+    l.userData = {id:Date.now(), name:'Point', type:'light'};
+    scene.add(l); objects.push(l); selectObject(l); updateOutliner(); return;
+  }
+  if(type==='camera') {
+    const c = new THREE.PerspectiveCamera(50,1,0.1,100);
+    c.userData = {id:Date.now(), name:'Camera', type:'camera'};
+    scene.add(c); objects.push(c); selectObject(c); updateOutliner(); return;
+  }
+
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.userData = {id:Date.now(), name:type.charAt(0).toUpperCase()+type.slice(1), type:'mesh'};
+  scene.add(mesh); objects.push(mesh); selectObject(mesh); updateOutliner();
+};
+
+function selectObject(obj) {
+  selected = obj;
+  if(currentTool!=='select') transform.attach(obj);
+  updateProps();
+  updateOutliner();
+}
+
+function updateOutliner() {
+  document.getElementById('outlinerContent').innerHTML = objects.map(o =>
+    `<div class="outliner-item ${o===selected?'selected':''}" onclick="selectById(${o.userData.id})">${o.userData.name}</div>`
+  ).join('');
+  document.getElementById('status').textContent = `Ready | Objects: ${objects.length}/${objects.length}`;
+}
+
+window.selectById = (id) => selectObject(objects.find(o=>o.userData.id===id));
+
+// PROPERTIES
+function updateProps() {
+  if(!selected || selected.type==='Light' || selected.type==='Camera') return;
+  locX.value = selected.position.x.toFixed(3);
+  locY.value = selected.position.y.toFixed(3);
+  locZ.value = selected.position.z.toFixed(3);
+  rotX.value = (selected.rotation.x*180/Math.PI).toFixed(1);
+  rotY.value = (selected.rotation.y*180/Math.PI).toFixed(1);
+  rotZ.value = (selected.rotation.z*180/Math.PI).toFixed(1);
+  scaX.value = selected.scale.x.toFixed(3);
+  scaY.value = selected.scale.y.toFixed(3);
+  scaZ.value = selected.scale.z.toFixed(3);
+}
+
+window.updateTransform = () => {
+  if(!selected) return;
+  selected.position.set(+locX.value, +locY.value, +locZ.value);
+  selected.rotation.set(+rotX.value*Math.PI/180, +rotY.value*Math.PI/180, +rotZ.value*Math.PI/180);
+  selected.scale.set(+scaX.value, +scaY.value, +scaZ.value);
+};
+
+// ANIMATION
+window.addKeyframe = () => {
+  if(!selected) return;
+  const id = selected.userData.id;
+  if(!keyframes[id]) keyframes[id] = {};
+  keyframes[id][currentFrame] = {
+    pos: selected.position.clone(),
+    rot: selected.rotation.clone(),
+    sca: selected.scale.clone()
+  };
+  renderTimeline();
+};
+
+function renderTimeline() {
+  const track = document.getElementById('track1');
+  track.innerHTML = '';
+  if(selected && keyframes[selected.userData.id]) {
+    Object.keys(keyframes[selected.userData.id]).forEach(f => {
+      const k = document.createElement('div');
+      k.className = 'keyframe';
+      k.style.left = `${(f/120)*100}%`;
+      track.appendChild(k);
+    });
+  }
+  document.getElementById('cursor').style.left = `${(currentFrame/120)*100}%`;
+}
+
+window.setFrame = (f) => {
+  currentFrame = Math.max(0, Math.min(120, parseInt(f)));
+  document.getElementById('frameInput').value = currentFrame;
+  // Interpolate all objects
+  objects.forEach(obj => {
+    const keys = keyframes[obj.userData.id];
+    if(!keys) return;
+    const frames = Object.keys(keys).map(Number).sort((a,b)=>a-b);
+    const prev = frames.filter(x=>x<=currentFrame).pop();
+    const next = frames.find(x=>x>=currentFrame);
+    if(prev!==undefined) {
+      const k = keys[next===prev?prev:prev];
+      obj.position.copy(k.pos); obj.rotation.copy(k.rot); obj.scale.copy(k.sca);
+    }
+  });
+  renderTimeline();
+  updateProps();
+};
+
+window.togglePlay = () => {
+  isPlaying =!isPlaying;
+  document.getElementById('playBtn').textContent = isPlaying?'⏸':'▶';
+};
+
+// HOTKEYS
+window.addEventListener('keydown', e => {
+  if(e.target.tagName==='INPUT') return;
+  if(e.key==='g') setTool('move');
+  if(e.key==='r') setTool('rotate');
+  if(e.key==='s') setTool('scale');
+  if(e.key==='x') deleteSelected();
+  if(e.key==='i') addKeyframe();
+  if(e.key==='n') togglePanel('properties');
+  if(e.key==='t') togglePanel('timeline');
+  if(e.key==='F9') togglePanel('outliner');
+  if(e.key===' ') { e.preventDefault(); togglePlay(); }
+});
+
+window.deleteSelected = () => {
+  if(!selected) return;
+  scene.remove(selected);
+  objects = objects.filter(o=>o!==selected);
+  transform.detach(); selected = null;
+  updateOutliner();
+};
+
+// EXPORT
+window.exportGLB = () => {
+  new GLTFExporter().parse(scene, g => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([g], {type:'model/gltf-binary'}));
+    a.download = 'scene.glb'; a.click();
+  }, {binary:true});
+};
+
+// SAVE/LOAD
+window.saveProject = () => localStorage.setItem('blender_web', JSON.stringify({keyframes}));
+window.loadProject = () => {
+  const d = localStorage.getItem('blender_web');
+  if(d) { keyframes = JSON.parse(d).keyframes; renderTimeline(); }
+};
+window.newScene = () => { objects.forEach(o=>scene.remove(o)); objects=[]; keyframes={}; updateOutliner(); };
+
+// RENDER
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  camera.aspect = w/h; camera.updateProjectionMatrix();
+  renderer.setSize(w,h,false);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  if(isPlaying) setFrame((currentFrame+1)%121);
+  controls.update();
+  renderer.render(scene, camera);
+  
