@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FaceSpace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+   .fb-blue { background: #1877f2; }
+   .fb-bg { background: #18191a; }
+   .fb-card { background: #242526; }
+   .fb-border { border-color: #3a3b3c; }
+  </style>
+</head>
+<body class="fb-bg text-gray-100 min-h-screen">
+
+  <!-- HEADER -->
+  <div class="fb-card border-b fb-border px-4 py-2 flex items-center justify-between sticky top-0 z-10">
+    <div class="text-2xl font-bold text-[#1877f2]">facespace</div>
+    <div class="flex gap-4 text-xl">
+      <button onclick="showTab('feed')">🏠</button>
+      <button onclick="showTab('friends')">👥</button>
+      <button onclick="showProfile()">😊</button>
+    </div>
+  </div>
+
+  <!-- FEED TAB -->
+  <div id="feed-tab" class="max-w-xl mx-auto p-4">
+    <!-- CREATE POST -->
+    <div class="fb-card rounded-lg p-4 mb-4 fb-border border">
+      <div class="flex gap-3">
+        <div class="w-10 h-10 bg-gray-500 rounded-full"></div>
+        <input id="post-input" placeholder="What's on your mind?" onclick="openComposer()" class="flex-1 bg-[#3a3b3c] rounded-full px-4 py-2 outline-none">
+      </div>
+    </div>
+
+    <!-- POSTS -->
+    <div id="posts"></div>
+  </div>
+
+  <!-- FRIENDS TAB -->
+  <div id="friends-tab" class="hidden max-w-xl mx-auto p-4">
+    <div class="fb-card rounded-lg p-4 fb-border border">
+      <div class="font-bold mb-3">Share your profile</div>
+      <div class="text-sm text-gray-400 mb-2">Your Feed ID:</div>
+      <div id="my-feed-id" class="bg-[#3a3b3c] p-2 rounded text-xs break-all mb-3"></div>
+      <button onclick="copyFeedID()" class="w-full fb-blue p-2 rounded font-bold mb-4">Copy My Feed Link</button>
+      
+      <div class="text-sm text-gray-400 mb-2">Add friend's feed:</div>
+      <input id="friend-feed" placeholder="Paste friend's Feed ID" class="w-full bg-[#3a3b3c] p-2 rounded mb-2 outline-none text-sm">
+      <button onclick="addFriend()" class="w-full bg-[#3a3b3c] p-2 rounded font-bold">Add Friend</button>
+      
+      <div class="mt-4 text-sm font-bold mb-2">Friends</div>
+      <div id="friends-list"></div>
+    </div>
+  </div>
+
+  <!-- COMPOSER MODAL -->
+  <div id="composer" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-20">
+    <div class="fb-card rounded-lg w-full max-w-xl fb-border border">
+      <div class="p-4 border-b fb-border font-bold flex justify-between">
+        <div>Create post</div>
+        <button onclick="closeComposer()">✕</button>
+      </div>
+      <div class="p-4">
+        <textarea id="post-text" placeholder="What's on your mind?" class="w-full bg-transparent outline-none h-32 resize-none"></textarea>
+        <input id="post-img" placeholder="Image URL - optional" class="w-full bg-[#3a3b3c] p-2 rounded mt-3 outline-none text-sm">
+      </div>
+      <div class="p-4">
+        <button onclick="createPost()" class="w-full fb-blue p-2 rounded font-bold">Post</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Generate unique ID for your feed
+let myID = localStorage.getItem('facespace-id') || 'face-' + Math.random().toString(36).substr(2, 9)
+localStorage.setItem('facespace-id', myID)
+document.getElementById('my-feed-id').textContent = location.href.split('#')[0] + '#' + myID
+
+// Load data
+let posts = JSON.parse(localStorage.getItem('facespace-posts') || '[]')
+let friends = JSON.parse(localStorage.getItem('facespace-friends') || '[]')
+let profile = JSON.parse(localStorage.getItem('facespace-profile') || '{"name":"You","pic":""}')
+
+function showTab(tab) {
+  ['feed','friends'].forEach(t => document.getElementById(t+'-tab').classList.add('hidden'))
+  document.getElementById(tab+'-tab').classList.remove('hidden')
+  if(tab==='feed') renderPosts()
+  if(tab==='friends') renderFriends()
+}
+
+function openComposer() {
+  document.getElementById('composer').classList.remove('hidden')
+  document.getElementById('post-text').focus()
+}
+
+function closeComposer() {
+  document.getElementById('composer').classList.add('hidden')
+  document.getElementById('post-text').value = ''
+  document.getElementById('post-img').value = ''
+}
+
+function createPost() {
+  const text = document.getElementById('post-text').value.trim()
+  const img = document.getElementById('post-img').value.trim()
+  if (!text &&!img) return
+  
+  const post = {
+    id: Date.now(),
+    author: profile.name,
+    authorID: myID,
+    text, img,
+    time: new Date().toLocaleString(),
+    likes: 0,
+    comments: []
+  }
+  posts.unshift(post)
+  localStorage.setItem('facespace-posts', JSON.stringify(posts))
+  closeComposer()
+  renderPosts()
+}
+
+function renderPosts() {
+  // Load friend posts from URL hash if shared
+  const hash = location.hash.substring(1)
+  if (hash && hash!== myID &&!friends.includes(hash)) {
+    loadFriendFeed(hash)
+  }
+  
+  let allPosts = [...posts]
+  
+  // Add friend posts from localStorage
+  friends.forEach(fid => {
+    const friendPosts = JSON.parse(localStorage.getItem('facespace-feed-'+fid) || '[]')
+    allPosts = allPosts.concat(friendPosts)
+  })
+  
+  allPosts.sort((a,b) => b.id - a.id)
+  
+  document.getElementById('posts').innerHTML = allPosts.map(p => `
+    <div class="fb-card rounded-lg mb-4 fb-border border">
+      <div class="p-4 flex gap-3">
+        <div class="w-10 h-10 bg-gray-500 rounded-full"></div>
+        <div class="flex-1">
+          <div class="font-bold">${p.author}</div>
+          <div class="text-xs text-gray-400">${p.time}</div>
+        </div>
+      </div>
+      ${p.text? `<div class="px-4 pb-3">${p.text}</div>` : ''}
+      ${p.img? `<img src="${p.img}" class="w-full">` : ''}
+      <div class="px-4 py-2 border-t fb-border text-sm text-gray-400 flex justify-between">
+        <div>${p.likes} Likes</div>
+        <div>${p.comments.length} Comments</div>
+      </div>
+      <div class="px-4 py-1 border-t fb-border flex text-gray-400">
+        <button onclick="likePost(${p.id})" class="flex-1 py-2 hover:bg-[#3a3b3c] rounded">👍 Like</button>
+        <button onclick="commentPost(${p.id})" class="flex-1 py-2 hover:bg-[#3a3b3c] rounded">💬 Comment</button>
+        <button onclick="sharePost(${p.id})" class="flex-1 py-2 hover:bg-[#3a3b3c] rounded">↗ Share</button>
+      </div>
+    </div>
+  `).join('') || '<div class="text-center text-gray-400 mt-8">No posts yet. Create one!</div>'
+}
+
+function likePost(id) {
+  const post = posts.find(p => p.id === id)
+  if (post) { post.likes++; localStorage.setItem('facespace-posts', JSON.stringify(posts)); renderPosts() }
+}
+
+function commentPost(id) {
+  const text = prompt('Write a comment:')
+  if (!text) return
+  const post = posts.find(p => p.id === id)
+  if (post) { post.comments.push({ author: profile.name, text }); localStorage.setItem('facespace-posts', JSON.stringify(posts)); renderPosts() }
+}
+
+function sharePost(id) {
+  const url = location.href.split('#')[0] + '#' + myID + '&post=' + id
+  navigator.clipboard.writeText(url)
+  alert('Post link copied!')
+}
+
+function copyFeedID() {
+  navigator.clipboard.writeText(location.href.split('#')[0] + '#' + myID)
+  alert('Feed link copied! Send to friends')
+}
+
+function addFriend() {
+  const url = document.getElementById('friend-feed').value
+  const fid = url.split('#')[1]
+  if (!fid || friends.includes(fid)) return
+  friends.push(fid)
+  localStorage.setItem('facespace-friends', JSON.stringify(friends))
+  document.getElementById('friend-feed').value = ''
+  renderFriends()
+  renderPosts()
+}
+
+function renderFriends() {
+  document.getElementById('friends-list').innerHTML = friends.map(f => `
+    <div class="flex items-center gap-3 py-2">
+      <div class="w-8 h-8 bg-gray-500 rounded-full"></div>
+      <div class="flex-1 text-sm">${f.substring(0,15)}...</div>
+    </div>
+  `).join('') || '<div class="text-gray-400 text-sm">No friends yet</div>'
+}
+
+function loadFriendFeed(fid) {
+  // In pure GitHub Pages, we can't fetch other users' localStorage
+  // So friends must manually send you their posts.json file
+  // For demo: we'll just add them to friends list
+  if (!friends.includes(fid)) {
+    friends.push(fid)
+    localStorage.setItem('facespace-friends', JSON.stringify(friends))
+  }
+}
+
+function showProfile() {
+  const name = prompt('Your name:', profile.name)
+  if (name) { profile.name = name; localStorage.setItem('facespace-profile', JSON.stringify(profile)); renderPosts() }
+}
+
+// Share your posts publicly so friends can import
+localStorage.setItem('facespace-feed-'+myID, JSON.stringify(posts))
+
+// Initial render
+renderPosts()
+</script>
+</body>
+    </html>
