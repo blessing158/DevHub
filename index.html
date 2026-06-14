@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevHub Studios</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#0d0d0d;
+    color:white;
+}
+
+header{
+    background:#111;
+    border-bottom:2px solid gold;
+    padding:15px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:gold;
+}
+
+.logo span{
+    color:#d40000;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    color:gold;
+}
+
+.hero{
+    height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+    background:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),
+    url('https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=1200&q=80');
+    background-size:cover;
+    background-position:center;
+}
+
+.hero-content h1{
+    font-size:60px;
+    color:gold;
+}
+
+.hero-content p{
+    margin-top:15px;
+    font-size:20px;
+    color:#ddd;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:25px;
+    padding:14px 28px;
+    background:#d40000;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:gold;
+    color:black;
+}
+
+.section{
+    padding:80px 30px;
+    max-width:1200px;
+    margin:auto;
+}
+
+.section h2{
+    text-align:center;
+    color:gold;
+    margin-bottom:40px;
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#161616;
+    padding:25px;
+    border:1px solid #222;
+    border-radius:12px;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    border-color:gold;
+}
+
+.card h3{
+    color:gold;
+    margin-bottom:10px;
+}
+
+.pricing{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:25px;
+}
+
+.plan{
+    background:#161616;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.plan h3{
+    color:gold;
+}
+
+.price{
+    font-size:40px;
+    margin:20px 0;
+    color:#d40000;
+}
+
+.plan ul{
+    list-style:none;
+    margin:20px 0;
+}
+
+.plan li{
+    margin:10px 0;
+}
+
+footer{
+    background:#111;
+    border-top:2px solid gold;
+    text-align:center;
+    padding:25px;
+    color:#aaa;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Dev<span>Hub</span> Studios</div>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Features</a>
+        <a href="#">Plans</a>
+        <a href="#">Login</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Create Movies Like a Studio</h1>
+        <p>Create characters, scenes, sounds and full animated movies from one platform.</p>
+
+        <a href="#" class="btn">Start Creating</a>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Studio Features</h2>
+
+    <div class="features">
+
+        <div class="card">
+            <h3>Character Creator</h3>
+            <p>Build anime characters, heroes, villains and creatures.</p>
+        </div>
+
+        <div class="card">
+            <h3>Scene Builder</h3>
+            <p>Create cities, forests, planets and custom backgrounds.</p>
+        </div>
+
+        <div class="card">
+            <h3>Sound Studio</h3>
+            <p>Add music, voices and cinematic effects.</p>
+        </div>
+
+        <div class="card">
+            <h3>Timeline Editor</h3>
+            <p>Edit scenes and animations professionally.</p>
+        </div>
+
+        <div class="card">
+            <h3>Movie Export</h3>
+            <p>Export your movie in HD and 4K quality.</p>
+        </div>
+
+        <div class="card">
+            <h3>AI Assistant</h3>
+            <p>Generate characters, stories and ideas instantly.</p>
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <h2>Choose Your Plan</h2>
+
+    <div class="pricing">
+
+        <div class="plan">
+            <h3>Free</h3>
+            <div class="price">R0</div>
+
+            <ul>
+                <li>3 Projects</li>
+                <li>Basic Characters</li>
+                <li>720P Export</li>
+                <li>Community Access</li>
+            </ul>
+
+            <a href="#" class="btn">Get Started</a>
+        </div>
+
+        <div class="plan">
+            <h3>Creator</h3>
+            <div class="price">R100</div>
+
+            <ul>
+                <li>Unlimited Projects</li>
+                <li>Premium Assets</li>
+                <li>1080P Export</li>
+                <li>Cloud Saves</li>
+            </ul>
+
+            <a href="#" class="btn">Subscribe</a>
+        </div>
+
+        <div class="plan">
+            <h3>Studio Pro</h3>
+            <div class="price">R300</div>
+
+            <ul>
+                <li>AI Character Generator</li>
+                <li>4K Export</li>
+                <li>Team Collaboration</li>
+                <li>Unlimited Storage</li>
+            </ul>
+
+            <a href="#" class="btn">Go Pro</a>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    © 2026 DevHub Studios — Create Amazing Animated Movies
+</footer>
+
+</body>
+  </html>
