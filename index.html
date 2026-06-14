@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-black text-white">
+  
+  <div id="app">
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4">
+      <div class="w-full max-w-sm">
+        <h1 class="text-4xl font-bold text-center mb-8">TikTok Clone</h1>
+        <input id="email" type="email" placeholder="Email" class="w-full p-3 mb-3 rounded bg-zinc-800 text-white">
+        <input id="password" type="password" placeholder="Password" class="w-full p-3 mb-3 rounded bg-zinc-800 text-white">
+        <button onclick="signUp()" class="w-full bg-red-500 p-3 rounded mb-2 font-bold">Sign Up</button>
+        <button onclick="logIn()" class="w-full bg-zinc-700 p-3 rounded font-bold">Log In</button>
+        <p id="auth-error" class="text-red-500 text-sm mt-2 text-center"></p>
+      </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-screen" class="hidden">
+      <div id="video-feed" class="h-screen overflow-y-scroll snap-y snap-mandatory"></div>
+      
+      <div class="fixed bottom-6 right-4">
+        <label for="video-upload" class="bg-red-500 p-4 rounded-full text-2xl cursor-pointer block text-center">+</label>
+        <input id="video-upload" type="file" accept="video/*" class="hidden" onchange="uploadVideo(event)">
+      </div>
+
+      <button onclick="logOut()" class="fixed top-4 right-4 bg-zinc-700 px-4 py-2 rounded">Logout</button>
+    </div>
+  </div>
+
+<script>
+  const SUPABASE_URL = 'https://sorfkhpnddylapohohqq.supabase.co'
+  const SUPABASE_KEY = 'sb_publishable_9PUHjF8HvEEKgnQfo6FdcA_JVSDEPZn'
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+  let currentUser = null
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (session?.user) {
+      currentUser = session.user
+      document.getElementById('auth-screen').classList.add('hidden')
+      document.getElementById('main-screen').classList.remove('hidden')
+      loadVideos()
+    } else {
+      currentUser = null
+      document.getElementById('auth-screen').classList.remove('hidden')
+      document.getElementById('main-screen').classList.add('hidden')
+    }
+  })
+
+  async function signUp() {
+    const email = document.getElementById('email').value
+    const password = document.getElementById('password').value
+    const { error } = await supabase.auth.signUp({ email, password })
+    if (error) document.getElementById('auth-error').innerText = error.message
+    else document.getElementById('auth-error').innerText = 'Check your email to confirm!'
+  }
+
+  async function logIn() {
+    const email = document.getElementById('email').value
+    const password = document.getElementById('password').value
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) document.getElementById('auth-error').innerText = error.message
+  }
+
+  async function logOut() {
+    await supabase.auth.signOut()
+  }
+
+  async function uploadVideo(e) {
+    const file = e.target.files[0]
+    if (!file ||!currentUser) return
+
+    const fileName = `${currentUser.id}/${Date.now()}.mp4`
+    
+    const { error: uploadError } = await supabase.storage
+    .from('videos')
+    .upload(fileName, file)
+    
+    if (uploadError) return alert('Upload failed: ' + uploadError.message)
+
+    const { data: { publicUrl } } = supabase.storage
+    .from('videos')
+    .getPublicUrl(fileName)
+
+    const caption = prompt('Add a caption:') || ''
+    const { error: dbError } = await supabase
+    .from('videos')
+    .insert({
+        user_id: currentUser.id,
+        username: currentUser.email.split('@')[0],
+        caption: caption,
+        video_url: publicUrl
+      })
+
+    if (dbError) return alert('Save failed: ' + dbError.message)
+    
+    alert('Posted!')
+    loadVideos()
+    e.target.value = ''
+  }
+
+  async function loadVideos() {
+    const { data: videos, error } = await supabase
+    .from('videos')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+    if (error) return console.error(error)
+
+    const feed = document.getElementById('video-feed')
+    feed.innerHTML = videos.map(video => `
+      <div class="h-screen w-full snap-start relative flex items-center justify-center">
+        <video src="${video.video_url}" class="h-full w-full object-cover" loop muted playsinline></video>
+        <div class="absolute bottom-20 left-4">
+          <p class="font-bold">@${video.username}</p>
+          <p>${video.caption}</p>
+        </div>
+      </div>
+    `).join('')
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const video = entry.target.querySelector('video')
+        if (entry.isIntersecting) video.play()
+        else video.pause()
+      })
+    }, { threshold: 0.6 })
+
+    document.querySelectorAll('#video-feed > div').forEach(div => observer.observe(div))
+  }
+</script>
+
+</body>
+  </html>
